@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora IMC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-cyan-600 via-emerald-600 to-green-600 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8  rounded-2xl shadow-xl w-full max-w-sm">
+        <h1 class="text-2xl font-bold text-center mb-6 mt-4">Calculadora de IMC</h1>
+
+        <form method="POST" class="space-y-4">
+            <div>
+                <label for="peso" class="block text-sm font-medium text-gray-700">Peso (kg)</label>
+                <input type="number" name="peso" step="0.1" required
+                       class="mt-1 w-full rounded-xl p-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+            <div>
+                <label for="altura" class="block text-sm font-medium text-gray-700">Altura (m)</label>
+                <input type="number" name="altura" step="0.01" required
+                       class="mt-1 w-full rounded-xl p-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-xl">
+                Calcular IMC
+            </button>
+        </form>
+
+        {% if imc %}
+            <div class="mt-6 text-center text-lg text-gray-800 font-semibold">
+                Tu IMC es: {{ '%.2f' % imc }}<br>
+                Categoría: {{ categoria }}
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
