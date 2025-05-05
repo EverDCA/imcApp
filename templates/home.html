@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clínica Salud Vida</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex flex-col min-h-screen bg-gradient-to-tr from-cyan-600 via-emerald-600 to-green-600 text-white">
+
+    <!-- HEADER -->
+    <header class="bg-white/90 shadow">
+      <nav class="container mx-auto flex items-center justify-between p-4 text-gray-800">
+        <div class="flex items-center space-x-4">
+          <div class="text-2xl font-bold text-emerald-700">Clínica Salud Vida</div>
+          <button class="lg:hidden text-2xl" onclick="toggleMenu()" aria-label="Abrir menú">&#9776;</button>
+        </div>
+        <div id="navLinks"
+          class="hidden lg:flex flex-col lg:flex-row lg:items-center lg:space-x-6 space-y-2 lg:space-y-0 mt-4 lg:mt-0">
+          <a href="#nosotros" class="hover:text-emerald-600">Nosotros</a>
+          <a href="#quienes-somos" class="hover:text-emerald-600">Quiénes somos</a>
+          <button onclick="alert('Función de inicio de sesión próximamente')"
+            class="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition">
+            Iniciar sesión
+          </button>
+        </div>
+      </nav>
+    </header>
+  
+    <!-- MAIN -->
+    <main class="flex-1 container mx-auto px-4 py-10">
+      <div class="bg-white/90 text-gray-900 p-8 rounded-xl shadow-lg space-y-10">
+        <section id="nosotros">
+          <h2 class="text-2xl font-semibold mb-2 text-emerald-700">Nosotros</h2>
+          <p>
+            En <strong>Clínica Salud Vida</strong> ofrecemos atención médica integral con enfoque humano y profesional.
+            Nuestro objetivo es brindar servicios de salud con calidad, rapidez y confianza, respaldados por tecnología
+            moderna y un equipo altamente capacitado.
+          </p>
+        </section>
+  
+        <section id="quienes-somos">
+          <h2 class="text-2xl font-semibold mb-2 text-emerald-700">Quiénes somos</h2>
+          <p>
+            Somos una institución de salud comprometida con el bienestar de nuestros pacientes. Contamos con médicos
+            especialistas, enfermeras, técnicos y personal administrativo dispuestos a servir con vocación, ética y calidez
+            humana.
+          </p>
+        </section>
+      </div>
+    </main>
+  
+    <!-- FOOTER -->
+    <footer class="bg-white/10 text-white pt-10 pb-6">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+        <div>
+          <h4 class="font-semibold text-lg mb-2">Contacto</h4>
+          <p>Tel: +57 321 456 7890</p>
+          <p>Email: contacto@saludvida.com</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-lg mb-2">Ubicación</h4>
+          <p>Calle 123 #45-67</p>
+          <p>Bogotá, Colombia</p>
+          <p>Horario: Lunes a Sábado 7am - 6pm</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-lg mb-2">Síguenos</h4>
+          <p>Facebook: Clínica Salud Vida</p>
+          <p>Instagram: @saludvida_clinica</p>
+          <p>Twitter: @SaludVida</p>
+        </div>
+      </div>
+      <div class="text-center text-sm text-white/80">
+        &copy; 2025 Clínica Salud Vida · Todos los derechos reservados
+      </div>
+    </footer>
+  
+    <!-- SCRIPT -->
+    <script>
+      function toggleMenu() {
+        const nav = document.getElementById('navLinks');
+        nav.classList.toggle('hidden');
+      }
+    </script>
+  
+  </body>
+  
+
+</html>
