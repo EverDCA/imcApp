@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/imc', methods=['GET', 'POST'])
 def index():
     imc = None
     categoria = None
@@ -22,6 +22,11 @@ def index():
             categoria = "Obesidad"
             
     return render_template('index.html', imc=imc, categoria=categoria)
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
