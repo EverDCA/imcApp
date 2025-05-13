@@ -21,10 +21,11 @@
           class="hidden lg:flex flex-col lg:flex-row lg:items-center lg:space-x-6 space-y-2 lg:space-y-0 mt-4 lg:mt-0">
           <a href="#nosotros" class="hover:text-emerald-600">Nosotros</a>
           <a href="/imc" class="hover:text-emerald-600">IMC</a>
-          <button onclick="alert('Función de inicio de sesión próximamente')"
-            class="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition">
-            Iniciar sesión
-          </button>
+          <a href="/login"
+  class="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition">
+  Iniciar sesión
+</a>
+
         </div>
       </nav>
     </header>
@@ -79,11 +80,8 @@
     </footer>
   
     <!-- SCRIPT -->
-    <script>
-      function toggleMenu() {
-        const nav = document.getElementById('navLinks');
-        nav.classList.toggle('hidden');
-      }
+    <script src="/index.js">
+     
     </script>
   
   </body>

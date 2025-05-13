@@ -1,4 +1,4 @@
-function toggleMenu() {
-    const nav = document.getElementById("navLinks");
-    nav.classList.toggle("open");
-}
+ function toggleMenu() {
+        const nav = document.getElementById('navLinks');
+        nav.classList.toggle('hidden');
+      }
