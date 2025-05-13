@@ -5,8 +5,9 @@
   <title>Iniciar Sesión</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-tr from-cyan-600 via-emerald-600 to-green-600 flex items-center justify-center min-h-screen">
+<body class="bg-gradient-to-tr from-cyan-600 via-emerald-600 to-green-600 ">
 {% include 'navbar.html' %}
+<div class="flex items-center justify-center min-h-screen">
   <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
     <h2 class="text-2xl font-bold mb-6 text-center text-emerald-700">Iniciar Sesión</h2>
     {% if error %}
@@ -29,6 +30,8 @@
       ¿No tienes cuenta? <a href="{{ url_for('auth.registro') }}" class="text-emerald-700 hover:underline">Regístrate aquí</a>
     </p>
   </div>
+</div>
+  
 
 </body>
 </html>
