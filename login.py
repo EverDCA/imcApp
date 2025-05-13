@@ -25,9 +25,14 @@ def registro():
     if request.method == 'POST':
         email = request.form['email']
         contraseña = request.form['contraseña']
+
+        # Verificar si el correo ya está registrado
+        if Usuario.query.filter_by(correo=email).first():
+            flash('El correo ya está registrado. Por favor, inicia sesión.')
+            return redirect(url_for('auth.login'))
+
         hashed_pw = generate_password_hash(contraseña)
         nuevo_usuario = Usuario(correo=email, contraseña=hashed_pw)
-
 
         db.session.add(nuevo_usuario)
         db.session.commit()

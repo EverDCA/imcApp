@@ -11,24 +11,7 @@
 <body class="flex flex-col min-h-screen bg-gradient-to-tr from-cyan-600 via-emerald-600 to-green-600 text-white">
 
     <!-- HEADER -->
-    <header class="bg-white/90 shadow">
-      <nav class="container mx-auto flex items-center justify-between p-4 text-gray-800">
-        <div class="flex items-center space-x-4">
-          <div class="text-2xl font-bold text-emerald-700">Clínica Salud Vida</div>
-          <button class="lg:hidden text-2xl" onclick="toggleMenu()" aria-label="Abrir menú">&#9776;</button>
-        </div>
-        <div id="navLinks"
-          class="hidden lg:flex flex-col lg:flex-row lg:items-center lg:space-x-6 space-y-2 lg:space-y-0 mt-4 lg:mt-0">
-          <a href="#nosotros" class="hover:text-emerald-600">Nosotros</a>
-          <a href="/imc" class="hover:text-emerald-600">IMC</a>
-          <a href="/login"
-  class="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700 transition">
-  Iniciar sesión
-</a>
-
-        </div>
-      </nav>
-    </header>
+    include('navbar.html')
   
     <!-- MAIN -->
     <main class="flex-1 container mx-auto px-4 py-10">
