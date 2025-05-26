@@ -50,8 +50,14 @@ def index():
                 categoria = "Peso normal"
             elif 25 <= imc < 29.999:
                 categoria = "Sobrepeso"
+            elif 30 <= imc < 34.9:
+                categoria = "Obesidad I"
+            elif 35 <= imc < 39.9:
+                categoria = "Obesidad II"
+            elif 40 <= imc < 49.9:
+                categoria = "Obesidad III"
             else:
-                categoria = "Obesidad"
+                categoria = "Obesidad IV"
 
             nuevo_registro = IMC(
                 peso=peso,

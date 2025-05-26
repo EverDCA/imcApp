@@ -70,11 +70,29 @@
             <li>Haz al menos 30 minutos de ejercicio al día.</li>
             <li>Consulta con un profesional de la salud.</li>
           </ul>
-        {% elif categoria == 'Obesidad' %}
+        {% elif categoria == 'Obesidad I' %}
           <ul class="list-disc text-base py-5 list-inside font-semibold space-y-2">
-            <li>Busca asesoría médica personalizada.</li>
-            <li>Realiza cambios sostenibles en tu dieta.</li>
-            <li>Incluye actividad física adaptada.</li>
+            <li>Consulta médica para evaluación integral.</li>
+            <li>Adopta una dieta personalizada baja en calorías.</li>
+            <li>Incrementa la actividad física supervisada.</li>
+          </ul>
+        {% elif categoria == 'Obesidad II' %}
+          <ul class="list-disc text-base py-5 list-inside font-semibold space-y-2">
+            <li>Atención médica especializada recomendada.</li>
+            <li>Considera apoyo psicológico y nutricional.</li>
+            <li>Evalúa posibles tratamientos farmacológicos.</li>
+          </ul>
+        {% elif categoria == 'Obesidad III' %}
+          <ul class="list-disc text-base py-5 list-inside font-semibold space-y-2">
+            <li>Supervisión médica estricta y multidisciplinaria.</li>
+            <li>Posible evaluación para cirugía bariátrica.</li>
+            <li>Participa en programas de control de peso.</li>
+          </ul>
+        {% elif categoria == 'Obesidad IV' %}
+          <ul class="list-disc text-base py-5 list-inside font-semibold space-y-2">
+            <li>Intervención médica urgente y personalizada.</li>
+            <li>Tratamiento integral con especialistas.</li>
+            <li>Considera opciones quirúrgicas avanzadas.</li>
           </ul>
         {% else %}
           <p class="text-sm text-gray-600">Calcula tu IMC para ver recomendaciones.</p>
