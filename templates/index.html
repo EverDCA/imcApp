@@ -5,22 +5,25 @@
   <title>Calculadora IMC</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
 </head>
 <body class="bg-gradient-to-tr from-cyan-600 via-emerald-600 to-green-600 min-h-screen text-gray-900">
 
   {% include 'navbar.html' %}
 
   <main class="container mx-auto py-10 px-4">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 xl:grid-cols-6 gap-4 xl:gap-6">
 
-      <!-- GRAFICAS -->
-      <section class="bg-white rounded-xl p-6 shadow-lg">
-        <h2 class="text-2xl font-bold mb-4 text-center text-emerald-700">Gráficas</h2>
-        <canvas id="imcChart" class="bg-gray-100 rounded-xl h-64"></canvas>
+      <!-- GRAFICAS: ocupa 4 columnas en xl -->
+      <section class="bg-white rounded-xl p-8 shadow-2xl col-span-1 xl:col-span-4 flex flex-col items-center justify-center">
+        <h2 class="text-3xl font-bold mb-6 text-center text-emerald-700">Gráficas</h2>
+        <div class="w-full flex justify-center">
+          <canvas id="imcChart" class="bg-gray-100 rounded-2xl" style="height:480px;max-width:1000px;"></canvas>
+        </div>
       </section>
 
-      <!-- CALCULADORA -->
-      <section class="bg-white rounded-xl shadow-xl p-6">
+      <!-- CALCULADORA: ocupa 2 columnas en xl -->
+      <section class="bg-white rounded-xl shadow-xl p-6 col-span-1 xl:col-span-2 flex flex-col justify-center">
         <h1 class="text-2xl font-bold text-center mb-6 mt-2 text-emerald-700">Calculadora de IMC</h1>
 
         <form method="POST" class="space-y-4">
@@ -48,8 +51,34 @@
         {% endif %}
       </section>
 
-      <!-- RECOMENDACIONES -->
-      <section class="bg-white rounded-xl p-6 shadow-lg">
+      <!-- HISTORIAL IMC: ocupa 4 columnas en xl -->
+      <section class="bg-white rounded-xl shadow-xl p-6 col-span-1 xl:col-span-4 flex flex-col mt-6 xl:mt-0">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-emerald-700">Historial IMC</h2>
+          <button id="borrarTodoBtn" class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition">Borrar todo</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm text-center">
+            <thead class="bg-emerald-100">
+              <tr>
+                <th class="px-2 py-2">#</th>
+                <th class="px-2 py-2">Peso (kg)</th>
+                <th class="px-2 py-2">Altura (m)</th>
+                <th class="px-2 py-2">IMC</th>
+                <th class="px-2 py-2">Categoría</th>
+                <th class="px-2 py-2">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="historialBody">
+              <!-- Filas generadas por JS -->
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-center mt-4 space-x-2" id="paginacionHistorial"></div>
+      </section>
+
+      <!-- RECOMENDACIONES: ocupa 2 columnas en xl -->
+      <section class="bg-white rounded-xl p-6 shadow-lg col-span-1 xl:col-span-2 flex flex-col justify-center mt-6 xl:mt-0">
         <h2 class="text-2xl font-bold mb-4 text-center text-emerald-700">Recomendaciones</h2>
 
         {% if categoria == 'Bajo peso' %}
@@ -107,8 +136,28 @@
       const response = await fetch('/api/imc-data');
       const data = await response.json();
 
+      function getColor(imc) {
+        if (imc < 18.5) return 'rgba(59, 130, 246, 0.7)'; // Azul - Bajo peso
+        if (imc < 25) return 'rgba(16, 185, 129, 0.7)'; // Verde - Normal
+        if (imc < 30) return 'rgba(251, 191, 36, 0.7)'; // Amarillo - Sobrepeso
+        if (imc < 35) return 'rgba(251, 113, 133, 0.7)'; // Rosa - Obesidad I
+        if (imc < 40) return 'rgba(244, 63, 94, 0.7)'; // Rojo - Obesidad II
+        if (imc < 50) return 'rgba(139, 92, 246, 0.7)'; // Morado - Obesidad III
+        return 'rgba(30, 41, 59, 0.7)'; // Gris oscuro - Obesidad IV
+      }
+      function getCategoria(imc) {
+        if (imc < 18.5) return 'Bajo peso';
+        if (imc < 25) return 'Peso normal';
+        if (imc < 30) return 'Sobrepeso';
+        if (imc < 35) return 'Obesidad I';
+        if (imc < 40) return 'Obesidad II';
+        if (imc < 50) return 'Obesidad III';
+        return 'Obesidad IV';
+      }
+
       const labels = data.map(item => `${item.peso}kg / ${item.altura}m`);
       const resultados = data.map(item => item.resultado);
+      const backgroundColors = resultados.map(getColor);
 
       const ctx = document.getElementById('imcChart').getContext('2d');
       new Chart(ctx, {
@@ -118,17 +167,161 @@
           datasets: [{
             label: 'IMC',
             data: resultados,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
+            backgroundColor: backgroundColors,
+            borderColor: backgroundColors.map(c => c.replace('0.7', '1')),
+            borderWidth: 2,
+            borderRadius: 8,
+            hoverBackgroundColor: backgroundColors.map(c => c.replace('0.7', '0.9')),
           }]
         },
         options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Historial de IMC',
+              color: '#047857',
+              font: { size: 20, weight: 'bold' }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const imc = context.parsed.y;
+                  return `IMC: ${imc.toFixed(2)} (${getCategoria(imc)})`;
+                }
+              }
+            },
+            annotation: {
+              annotations: {
+                normal: {
+                  type: 'line',
+                  yMin: 18.5,
+                  yMax: 18.5,
+                  borderColor: 'rgba(16, 185, 129, 0.7)',
+                  borderWidth: 2,
+                  label: {
+                    content: 'Normal',
+                    enabled: true,
+                    position: 'start',
+                    color: '#10b981',
+                    backgroundColor: '#fff'
+                  }
+                },
+                sobrepeso: {
+                  type: 'line',
+                  yMin: 25,
+                  yMax: 25,
+                  borderColor: 'rgba(251, 191, 36, 0.7)',
+                  borderWidth: 2,
+                  label: {
+                    content: 'Sobrepeso',
+                    enabled: true,
+                    position: 'start',
+                    color: '#fbbf24',
+                    backgroundColor: '#fff'
+                  }
+                },
+                obesidad: {
+                  type: 'line',
+                  yMin: 30,
+                  yMax: 30,
+                  borderColor: 'rgba(244, 63, 94, 0.7)',
+                  borderWidth: 2,
+                  label: {
+                    content: 'Obesidad',
+                    enabled: true,
+                    position: 'start',
+                    color: '#f43f5e',
+                    backgroundColor: '#fff'
+                  }
+                }
+              }
+            }
+          },
           scales: {
             y: {
-              beginAtZero: true
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'IMC',
+                color: '#047857',
+                font: { size: 16 }
+              },
+              grid: { color: '#d1fae5' }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Registro',
+                color: '#047857',
+                font: { size: 16 }
+              }
             }
+          },
+          animation: {
+            duration: 1200,
+            easing: 'easeOutBounce'
           }
+        },
+        plugins: [Chart.registry.getPlugin('annotation')]
+      });
+
+      // PAGINACIÓN DEL HISTORIAL
+      const historialBody = document.getElementById('historialBody');
+      const paginacion = document.getElementById('paginacionHistorial');
+      const pageSize = 5;
+      let currentPage = 1;
+      function renderHistorial(page) {
+        historialBody.innerHTML = '';
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const pageData = data.slice(start, end);
+        pageData.forEach((item, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="px-2 py-1">${start + idx + 1}</td>
+            <td class="px-2 py-1">${item.peso}</td>
+            <td class="px-2 py-1">${item.altura}</td>
+            <td class="px-2 py-1">${item.resultado.toFixed(2)}</td>
+            <td class="px-2 py-1">${item.categoria}</td>
+            <td class="px-2 py-1">
+              <button class="borrarBtn bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 transition" data-id="${item.id}">Borrar</button>
+            </td>
+          `;
+          historialBody.appendChild(tr);
+        });
+        // Botones borrar individuales
+        document.querySelectorAll('.borrarBtn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            const res = await fetch(`/api/imc-delete/${id}`, { method: 'DELETE' });
+            if (res.ok) location.reload();
+          });
+        });
+      }
+      function renderPaginacion() {
+        paginacion.innerHTML = '';
+        const totalPages = Math.ceil(data.length / pageSize);
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement('button');
+          btn.textContent = i;
+          btn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-emerald-100'}`;
+          btn.addEventListener('click', () => {
+            currentPage = i;
+            renderHistorial(currentPage);
+            renderPaginacion();
+          });
+          paginacion.appendChild(btn);
+        }
+      }
+      renderHistorial(currentPage);
+      renderPaginacion();
+      // Borrar todo el historial
+      document.getElementById('borrarTodoBtn').addEventListener('click', async () => {
+        if (confirm('¿Seguro que deseas borrar todo tu historial de IMC?')) {
+          const res = await fetch('/api/imc-delete-all', { method: 'DELETE' });
+          if (res.ok) location.reload();
         }
       });
     });

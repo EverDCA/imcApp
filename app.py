@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_login import LoginManager, login_required, current_user
 from config import Config
 from db import db, Usuario, IMC
@@ -80,6 +80,7 @@ def get_imc_data():
     registros = IMC.query.filter_by(usuario_id=current_user.id).all()
     data = [
         {
+            "id": registro.id,
             "peso": registro.peso,
             "altura": registro.altura,
             "resultado": registro.resultado,
@@ -88,6 +89,25 @@ def get_imc_data():
         for registro in registros
     ]
     return jsonify(data)
+
+
+@app.route('/api/imc-delete/<int:imc_id>', methods=['DELETE'])
+@login_required
+def delete_imc(imc_id):
+    registro = IMC.query.filter_by(id=imc_id, usuario_id=current_user.id).first()
+    if registro:
+        db.session.delete(registro)
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"success": False}), 404
+
+
+@app.route('/api/imc-delete-all', methods=['DELETE'])
+@login_required
+def delete_all_imc():
+    IMC.query.filter_by(usuario_id=current_user.id).delete()
+    db.session.commit()
+    return jsonify({"success": True})
 
 
 with app.app_context():
