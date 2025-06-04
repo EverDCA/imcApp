@@ -17,7 +17,7 @@
       <!-- GRAFICAS: ocupa 4 columnas en xl -->
       <section class="bg-white rounded-xl p-8 shadow-2xl col-span-1 xl:col-span-4 flex flex-col items-center justify-center">
         <h2 class="text-3xl font-bold mb-6 text-center text-emerald-700">Gráficas</h2>
-        <div class="w-full flex justify-center">
+        <div class="w-full flex justify-center min-h-[500px] max-h-[520px]">
           <canvas id="imcChart" class="bg-gray-100 rounded-2xl" style="height:480px;max-width:1000px;"></canvas>
         </div>
       </section>
@@ -133,8 +133,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const response = await fetch('/api/imc-data');
-      const data = await response.json();
+      let data = await (await fetch('/api/imc-data')).json();
 
       function getColor(imc) {
         if (imc < 18.5) return 'rgba(59, 130, 246, 0.7)'; // Azul - Bajo peso
@@ -155,117 +154,120 @@
         return 'Obesidad IV';
       }
 
-      const labels = data.map(item => `${item.peso}kg / ${item.altura}m`);
-      const resultados = data.map(item => item.resultado);
-      const backgroundColors = resultados.map(getColor);
-
-      const ctx = document.getElementById('imcChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'IMC',
-            data: resultados,
-            backgroundColor: backgroundColors,
-            borderColor: backgroundColors.map(c => c.replace('0.7', '1')),
-            borderWidth: 2,
-            borderRadius: 8,
-            hoverBackgroundColor: backgroundColors.map(c => c.replace('0.7', '0.9')),
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: 'Historial de IMC',
-              color: '#047857',
-              font: { size: 20, weight: 'bold' }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const imc = context.parsed.y;
-                  return `IMC: ${imc.toFixed(2)} (${getCategoria(imc)})`;
-                }
-              }
-            },
-            annotation: {
-              annotations: {
-                normal: {
-                  type: 'line',
-                  yMin: 18.5,
-                  yMax: 18.5,
-                  borderColor: 'rgba(16, 185, 129, 0.7)',
-                  borderWidth: 2,
-                  label: {
-                    content: 'Normal',
-                    enabled: true,
-                    position: 'start',
-                    color: '#10b981',
-                    backgroundColor: '#fff'
-                  }
-                },
-                sobrepeso: {
-                  type: 'line',
-                  yMin: 25,
-                  yMax: 25,
-                  borderColor: 'rgba(251, 191, 36, 0.7)',
-                  borderWidth: 2,
-                  label: {
-                    content: 'Sobrepeso',
-                    enabled: true,
-                    position: 'start',
-                    color: '#fbbf24',
-                    backgroundColor: '#fff'
-                  }
-                },
-                obesidad: {
-                  type: 'line',
-                  yMin: 30,
-                  yMax: 30,
-                  borderColor: 'rgba(244, 63, 94, 0.7)',
-                  borderWidth: 2,
-                  label: {
-                    content: 'Obesidad',
-                    enabled: true,
-                    position: 'start',
-                    color: '#f43f5e',
-                    backgroundColor: '#fff'
-                  }
-                }
-              }
-            }
+      let chartInstance = null;
+      function renderChart() {
+        const labels = data.map(item => `${item.peso}kg / ${item.altura}m`);
+        const resultados = data.map(item => item.resultado);
+        const backgroundColors = resultados.map(getColor);
+        const ctx = document.getElementById('imcChart').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'IMC',
+              data: resultados,
+              backgroundColor: backgroundColors,
+              borderColor: backgroundColors.map(c => c.replace('0.7', '1')),
+              borderWidth: 2,
+              borderRadius: 8,
+              hoverBackgroundColor: backgroundColors.map(c => c.replace('0.7', '0.9')),
+            }]
           },
-          scales: {
-            y: {
-              beginAtZero: true,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
               title: {
                 display: true,
-                text: 'IMC',
+                text: 'Historial de IMC',
                 color: '#047857',
-                font: { size: 16 }
+                font: { size: 20, weight: 'bold' }
               },
-              grid: { color: '#d1fae5' }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Registro',
-                color: '#047857',
-                font: { size: 16 }
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const imc = context.parsed.y;
+                    return `IMC: ${imc.toFixed(2)} (${getCategoria(imc)})`;
+                  }
+                }
+              },
+              annotation: {
+                annotations: {
+                  normal: {
+                    type: 'line',
+                    yMin: 18.5,
+                    yMax: 18.5,
+                    borderColor: 'rgba(16, 185, 129, 0.7)',
+                    borderWidth: 2,
+                    label: {
+                      content: 'Normal',
+                      enabled: true,
+                      position: 'start',
+                      color: '#10b981',
+                      backgroundColor: '#fff'
+                    }
+                  },
+                  sobrepeso: {
+                    type: 'line',
+                    yMin: 25,
+                    yMax: 25,
+                    borderColor: 'rgba(251, 191, 36, 0.7)',
+                    borderWidth: 2,
+                    label: {
+                      content: 'Sobrepeso',
+                      enabled: true,
+                      position: 'start',
+                      color: '#fbbf24',
+                      backgroundColor: '#fff'
+                    }
+                  },
+                  obesidad: {
+                    type: 'line',
+                    yMin: 30,
+                    yMax: 30,
+                    borderColor: 'rgba(244, 63, 94, 0.7)',
+                    borderWidth: 2,
+                    label: {
+                      content: 'Obesidad',
+                      enabled: true,
+                      position: 'start',
+                      color: '#f43f5e',
+                      backgroundColor: '#fff'
+                    }
+                  }
+                }
               }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'IMC',
+                  color: '#047857',
+                  font: { size: 16 }
+                },
+                grid: { color: '#d1fae5' }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Registro',
+                  color: '#047857',
+                  font: { size: 16 }
+                }
+              }
+            },
+            animation: {
+              duration: 1200,
+              easing: 'easeOutBounce'
             }
           },
-          animation: {
-            duration: 1200,
-            easing: 'easeOutBounce'
-          }
-        },
-        plugins: [Chart.registry.getPlugin('annotation')]
-      });
+          plugins: [Chart.registry.getPlugin('annotation')]
+        });
+      }
 
       // PAGINACIÓN DEL HISTORIAL
       const historialBody = document.getElementById('historialBody');
@@ -296,7 +298,14 @@
           btn.addEventListener('click', async (e) => {
             const id = e.target.getAttribute('data-id');
             const res = await fetch(`/api/imc-delete/${id}`, { method: 'DELETE' });
-            if (res.ok) location.reload();
+            if (res.ok) {
+              data = data.filter(item => item.id != id);
+              const totalPages = Math.ceil(data.length / pageSize);
+              if ((currentPage > totalPages) && totalPages > 0) currentPage = totalPages;
+              renderHistorial(currentPage);
+              renderPaginacion();
+              renderChart(); // Actualizar gráfica
+            }
           });
         });
       }
@@ -317,11 +326,19 @@
       }
       renderHistorial(currentPage);
       renderPaginacion();
+      renderChart(); // Llamar a renderChart después de cargar los datos inicialmente
+
       // Borrar todo el historial
       document.getElementById('borrarTodoBtn').addEventListener('click', async () => {
         if (confirm('¿Seguro que deseas borrar todo tu historial de IMC?')) {
           const res = await fetch('/api/imc-delete-all', { method: 'DELETE' });
-          if (res.ok) location.reload();
+          if (res.ok) {
+            data = [];
+            currentPage = 1;
+            renderHistorial(currentPage);
+            renderPaginacion();
+            renderChart(); // Actualizar gráfica
+          }
         }
       });
     });
